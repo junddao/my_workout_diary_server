@@ -1,2 +1,4 @@
 MONGODB_URI = "mongodb+srv://junddao:DL8OEfZhunFYfHRQ@cluster0.1k9jt.mongodb.net/test"
 JWT_SECRET=withWrite
+KAKAO_CLIENT_ID="9299fd6a12bfaa1a2c881f9ff9a87094"
+KAKAO_REDIRECT_URL="http://127.0.0.1:27017/auth/kakao/redirect"

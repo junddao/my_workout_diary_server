@@ -11,6 +11,9 @@ export class User {
   email: string;
 
   @Prop()
+  social: string;
+
+  @Prop()
   nickname: string;
 
   @Prop()
