@@ -1,5 +1,5 @@
 import { InSignUpDto } from './dto/in_sign_up.dto';
-import { AuthService } from './auth.service';
+import { AuthService, KakaoService } from './auth.service';
 import {
   Body,
   Controller,
@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { User } from './schemas/user.schema';
@@ -18,33 +17,36 @@ import { InUpdateUserDto } from './dto/in_update_user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly usersService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly kakaoService: KakaoService,
+  ) {}
 
   @Get('/me')
   @UseGuards(AuthGuard())
   async getMe(@GetUser() user: User): Promise<User> {
-    return this.usersService.getMe(user);
+    return this.authService.getMe(user);
   }
 
   @Get()
   async getUsers(): Promise<User[]> {
-    return this.usersService.getUsers();
+    return this.authService.getUsers();
   }
 
   @Get(':id')
   async getUser(@Param('id') id: string): Promise<User> {
-    return this.usersService.getUser(id);
+    return this.authService.getUser(id);
   }
 
   @Post('/signup')
   async signUp(@Body() requestSignUpDto: InSignUpDto): Promise<void> {
-    return this.usersService.signUp(requestSignUpDto);
+    return this.authService.signUp(requestSignUpDto);
   }
   @Post('/signin')
   async signIn(
-    @Body() requestSignInDto: InSignInDto,
+    @Body() inSingInDto: InSignInDto,
   ): Promise<{ accessToken: string }> {
-    return this.usersService.signIn(requestSignInDto);
+    return this.authService.signIn(inSingInDto);
   }
 
   @Patch(':id')
@@ -52,12 +54,6 @@ export class AuthController {
     @Param('id') id: string,
     @Body() inUpdateUserDto: InUpdateUserDto,
   ): Promise<User> {
-    return this.usersService.updateUser(id, inUpdateUserDto);
-  }
-
-  @Post('/test')
-  @UseGuards(AuthGuard())
-  test(@Req() req) {
-    console.log('req', req);
+    return this.authService.updateUser(id, inUpdateUserDto);
   }
 }

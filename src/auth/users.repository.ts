@@ -1,3 +1,4 @@
+import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import {
@@ -42,10 +43,10 @@ export class UsersRepository {
 
   async findOneAndUpdate(
     userFilterQuery: FilterQuery<User>,
-    authCredentialsDto: InSignUpDto,
+    inUpdateUserDto: InUpdateUserDto,
   ): Promise<User> {
     // const { email, password, name } = authCredentialsDto;
-    const updateUser = authCredentialsDto;
+    const updateUser = inUpdateUserDto;
 
     return this.userModel.findOneAndUpdate(userFilterQuery, updateUser);
   }
