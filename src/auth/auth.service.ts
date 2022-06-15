@@ -53,11 +53,11 @@ export class AuthService {
   }
 
   async signIn(inSignInDto: InSignInDto): Promise<{ accessToken: string }> {
-    const { email } = inSignInDto;
-    const user = await this.usersRepository.findOne({ email });
+    const { fbUid } = inSignInDto;
+    // const user = await this.usersRepository.findOne({ email });
 
     // if (user && (await bcrypt.compare(password, user.password))) {
-    const payload = { email };
+    const payload = { fbUid };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
     // } else {
@@ -67,8 +67,6 @@ export class AuthService {
   async signInKakao(
     inSignInKakaoDto: InSignInKakaoDto,
   ): Promise<{ token: string }> {
-    console.log('enter!!');
-
     const uid = inSignInKakaoDto.uid;
     const updateParams = {
       email: inSignInKakaoDto.email,
@@ -80,7 +78,18 @@ export class AuthService {
       await this.admin.auth().updateUser(uid, updateParams);
     } catch (e) {
       updateParams['uid'] = uid;
-      await this.admin.auth().createUser(updateParams);
+      updateParams['social'] = 'kakao';
+
+      const newUser = new InSignUpDto();
+      newUser.email = updateParams.email;
+      newUser.name = updateParams.name;
+      newUser.photoUrl = updateParams.photoUrl;
+      newUser.social = 'kakao';
+      newUser.uid = uid;
+
+      await this.admin.auth().createUser(newUser);
+
+      this.usersRepository.create(newUser);
     }
 
     const token = await this.admin.auth().createCustomToken(uid);
