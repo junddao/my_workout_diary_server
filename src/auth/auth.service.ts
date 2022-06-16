@@ -8,6 +8,7 @@ import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { InSignInDto } from './dto/in_sign_in.dto';
 import * as firebase from 'firebase-admin';
 import * as serviceAccount from './serviceAccountKey.json';
+import mongoose from 'mongoose';
 
 const firebase_params = {
   type: serviceAccount.type,
@@ -80,15 +81,14 @@ export class AuthService {
       updateParams['uid'] = uid;
       updateParams['social'] = 'kakao';
 
-      const newUser = new InSignUpDto();
-      newUser.email = updateParams.email;
-      newUser.name = updateParams.name;
-      newUser.photoUrl = updateParams.photoUrl;
-      newUser.social = 'kakao';
-      newUser.uid = uid;
-
+      const newUser: InSignUpDto = {
+        email: updateParams.email,
+        name: updateParams.name ?? 'no name',
+        photoUrl: updateParams.photoUrl,
+        social: 'kakao',
+        uid: uid,
+      };
       await this.admin.auth().createUser(newUser);
-
       this.usersRepository.create(newUser);
     }
 

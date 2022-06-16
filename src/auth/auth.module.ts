@@ -7,7 +7,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-// import { PreauthMiddleware } from './preauth.middeware';
 
 @Module({
   imports: [
@@ -24,12 +23,4 @@ import { PassportModule } from '@nestjs/passport';
   exports: [JwtStrategy, PassportModule],
   controllers: [AuthController],
 })
-export class AuthModule {
-  // implements NestModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(PreauthMiddleware).forRoutes({
-  //     path: '*',
-  //     method: RequestMethod.ALL,
-  //   });
-  // }
-}
+export class AuthModule {}

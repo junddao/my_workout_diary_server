@@ -1,11 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   _id: string;
+
+  @Prop()
+  fbUid: string;
 
   @Prop()
   email: string;
@@ -14,7 +17,7 @@ export class User {
   social: string;
 
   @Prop()
-  nickname: string;
+  name: string;
 
   @Prop()
   introduce: string;
@@ -22,26 +25,14 @@ export class User {
   @Prop()
   profileImage: string;
 
-  // @Prop()
-  // status (signed, active, left)
-
   @Prop()
   pushEnabled: boolean;
 
-  @Prop()
-  agreeTerms: boolean;
-
-  @Prop()
+  @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   updatedAt: Date;
-
-  @Prop()
-  password: string;
-
-  @Prop()
-  name: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
