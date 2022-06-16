@@ -22,16 +22,9 @@ export class UsersRepository {
     return this.userModel.find(userFilterQuery);
   }
 
-  async create(createUserDto: InSignUpDto): Promise<void> {
-    // const salt = await bcrypt.genSalt();
-    // const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
-
-    const user = {
-      email: createUserDto.email,
-      // password: hashedPassword,
-    };
+  async create(newUser: InSignUpDto): Promise<void> {
     try {
-      await this.userModel.create(user);
+      await this.userModel.create(newUser);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('exist username');
