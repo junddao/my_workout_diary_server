@@ -24,7 +24,7 @@ const firebase_params = {
 };
 
 @Injectable()
-export class AuthService {
+export class UserService {
   private admin: any;
 
   constructor(
@@ -33,7 +33,6 @@ export class AuthService {
   ) {
     this.admin = firebase.initializeApp({
       credential: firebase.credential.cert(firebase_params),
-      // databaseURL: 'https://my-workout-diary-d1093.firebaseio.com',
     });
   }
 
@@ -54,24 +53,18 @@ export class AuthService {
   }
 
   async signIn(inSignInDto: InSignInDto): Promise<{ accessToken: string }> {
-    const { fbUid } = inSignInDto;
-    // const user = await this.usersRepository.findOne({ email });
-
-    // if (user && (await bcrypt.compare(password, user.password))) {
-    const payload = { fbUid };
+    const { email } = inSignInDto;
+    const payload = { email };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
-    // } else {
-    //   throw new UnauthorizedException('login failed');
-    // }
   }
   async signInKakao(
     inSignInKakaoDto: InSignInKakaoDto,
-  ): Promise<{ token: string }> {
+  ): Promise<{ fbCustomToken: string }> {
     const uid = inSignInKakaoDto.uid;
     const updateParams = {
       email: inSignInKakaoDto.email,
-      photoUrl: inSignInKakaoDto.photoUrl,
+      profileImage: inSignInKakaoDto.profileImage,
       name: inSignInKakaoDto.name,
     };
 
@@ -84,17 +77,17 @@ export class AuthService {
       const newUser: InSignUpDto = {
         email: updateParams.email,
         name: updateParams.name ?? 'no name',
-        photoUrl: updateParams.photoUrl,
+        profileImage: updateParams.profileImage,
         social: 'kakao',
         uid: uid,
       };
       await this.admin.auth().createUser(newUser);
-      this.usersRepository.create(newUser);
+      await this.usersRepository.create(newUser);
     }
 
-    const token = await this.admin.auth().createCustomToken(uid);
+    const fbCustomToken = await this.admin.auth().createCustomToken(uid);
 
-    return { token };
+    return { fbCustomToken };
   }
 
   async updateUser(
@@ -104,52 +97,3 @@ export class AuthService {
     return this.usersRepository.findOneAndUpdate({ id }, inUpdateUserDto);
   }
 }
-
-// @Injectable()
-// export class KakaoService {
-//   private http: HttpService;
-//   constructor() {
-//     this.http = new HttpService();
-//   }
-//   async getUserInfo(access_token: string) {
-//     //console.log(access_token);
-//     return await fetch('https://kapi.kakao.com/v2/user/me', {
-//       method: 'GET',
-//       headers: {
-//         Authorization: `Bearer ${access_token}`,
-//       },
-//     }).then((res) => res.json());
-//   }
-
-//   // async kakaoLogin(url: string, headers: any): Promise<any> {
-//   //   return await this.http.post(url, '', { headers }).toPromise();
-//   // }
-
-//   async getToken(
-//     token: string,
-//     client_id: string,
-//     redirect_uri: string,
-//   ): Promise<any> {
-//     return await fetch('https://kauth.kakao.com/oauth/token', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-//       body: qs.stringify({
-//         grant_type: 'authorization_code',
-//         client_id: client_id,
-//         redirect_uri: redirect_uri,
-//         code: token,
-//       }),
-//     }).then((res) => res.json());
-//   }
-
-//   async logoutToken(access_token: string) {
-//     const respone = await fetch('https://kapi.kakao.com/v1/user/unlink', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/x-www-form-urlencoded',
-//         Authorization: `Bearer ${access_token}`,
-//       },
-//     }).then((res) => res.json());
-//     console.log(respone);
-//   }
-// }

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
@@ -8,25 +9,7 @@ export class User {
   _id: string;
 
   @Prop()
-  fbUid: string;
-
-  @Prop()
-  email: string;
-
-  @Prop()
-  social: string;
-
-  @Prop()
-  name: string;
-
-  @Prop()
-  introduce: string;
-
-  @Prop()
-  profileImage: string;
-
-  @Prop()
-  pushEnabled: boolean;
+  workoutTime: string;
 
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   createdAt: Date;

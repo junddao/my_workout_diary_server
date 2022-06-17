@@ -39,5 +39,5 @@ export class InSignUpDto {
     description: '프로필 사진 경로',
     required: true,
   })
-  photoUrl: string;
+  profileImage: string;
 }

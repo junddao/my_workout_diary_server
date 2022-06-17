@@ -1,9 +1,13 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { RecordController } from './record/record.controller';
+import { RecordService } from './record/record.service';
+import { RecordModule } from './record/record.module';
+import { LoggerMiddleware } from './logger.middleware';
 
 @Module({
   imports: [
@@ -21,9 +25,14 @@ import { AuthModule } from './auth/auth.module';
       }),
       inject: [ConfigService],
     }),
-    AuthModule,
+    UserModule,
+    RecordModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, RecordController],
+  providers: [AppService, RecordService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(LoggerMiddleware).forRoutes('/user');
+  }
+}
