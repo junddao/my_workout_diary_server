@@ -30,5 +30,5 @@ export class InSignInKakaoDto {
     description: '프로필 사진 경로',
     required: false,
   })
-  photoUrl: string;
+  profileImage: string;
 }

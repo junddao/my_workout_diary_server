@@ -32,7 +32,7 @@ export class InUpdateUserDto {
     required: true,
   })
   @IsNotEmpty()
-  photoUrl: string;
+  profileImage: string;
 
   // @IsNotEmpty()
   // status (signed, active, left)

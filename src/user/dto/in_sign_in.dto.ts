@@ -3,13 +3,10 @@ import { IsNotEmpty } from 'class-validator';
 
 export class InSignInDto {
   @ApiProperty({
-    example: ' ',
-    description: 'firebase id',
+    example: 'junddao@kakao.com',
+    description: 'email',
     required: true,
   })
   @IsNotEmpty()
-  fbUid: string;
-
-  // @IsNotEmpty()
-  // password: string;
+  email: string;
 }

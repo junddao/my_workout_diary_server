@@ -3,8 +3,8 @@ import { UsersRepository } from './users.repository';
 import { User, UserSchema } from './schemas/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { UserService } from './user.service';
+import { UserController } from './user.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
@@ -19,8 +19,8 @@ import { PassportModule } from '@nestjs/passport';
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
-  providers: [AuthService, UsersRepository, JwtStrategy],
+  providers: [UserService, UsersRepository, JwtStrategy],
   exports: [JwtStrategy, PassportModule],
-  controllers: [AuthController],
+  controllers: [UserController],
 })
-export class AuthModule {}
+export class UserModule {}
