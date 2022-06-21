@@ -1,3 +1,4 @@
+import { OutCommonDto } from './../common/dto/out_common.dto';
 import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { User, UserDocument } from './schemas/user.schema';
@@ -22,8 +23,9 @@ export class UsersRepository {
     return this.userModel.find(userFilterQuery);
   }
 
-  async create(newUser: InSignUpDto): Promise<void> {
+  async create(inSignUpDto: InSignUpDto): Promise<void> {
     try {
+      const newUser = { inSignUpDto, status: 'active' };
       await this.userModel.create(newUser);
     } catch (error) {
       if (error.code === '23505') {
@@ -41,6 +43,10 @@ export class UsersRepository {
     // const { email, password, name } = authCredentialsDto;
     const updateUser = inUpdateUserDto;
 
-    return this.userModel.findOneAndUpdate(userFilterQuery, updateUser);
+    try {
+      return this.userModel.findOneAndUpdate(userFilterQuery, updateUser);
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
   }
 }

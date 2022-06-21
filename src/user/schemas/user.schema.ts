@@ -29,6 +29,9 @@ export class User {
   @Prop()
   pushEnabled: boolean;
 
+  @Prop()
+  status: string;
+
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   createdAt: Date;
 

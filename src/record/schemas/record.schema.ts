@@ -1,15 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { Document } from 'mongoose';
+import RecordStatus from '../record_status.enum';
 
-export type UserDocument = User & Document;
+export type RecordDocument = Record & Document;
 
 @Schema({ timestamps: true })
-export class User {
+export class Record {
   _id: string;
 
   @Prop()
-  workoutTime: string;
+  workoutTime: Date;
+
+  @Prop()
+  condition: RecordStatus;
+
+  @Prop()
+  startTime: Date;
+
+  @Prop()
+  endTime: Date;
 
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   createdAt: Date;
@@ -18,4 +28,4 @@ export class User {
   updatedAt: Date;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const RecordSchema = SchemaFactory.createForClass(Record);
