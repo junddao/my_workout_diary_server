@@ -28,8 +28,8 @@ import { LoggerMiddleware } from './logger.middleware';
     UserModule,
     RecordModule,
   ],
-  controllers: [AppController, RecordController],
-  providers: [AppService, RecordService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {

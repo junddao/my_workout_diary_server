@@ -1,3 +1,4 @@
+import { OutCommonDto } from './../common/dto/out_common.dto';
 import { InSignInKakaoDto } from './dto/in_sign_in_kakao.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { UsersRepository } from './users.repository';
@@ -57,6 +58,17 @@ export class UserService {
     const payload = { email };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
+  }
+  async drop(user: User): Promise<OutCommonDto> {
+    user.status = 'drop';
+    const id = user._id;
+    const updatedUser = await this.usersRepository.findOneAndUpdate(
+      { id },
+      user,
+    );
+    if (updatedUser != null) {
+      return { result: true };
+    }
   }
   async signInKakao(
     inSignInKakaoDto: InSignInKakaoDto,
