@@ -1,8 +1,14 @@
-import { OutCommonDto } from './../common/dto/out_common.dto';
+import { ResponseDto } from '../common/dto/response.dto';
 import { InSignInKakaoDto } from './dto/in_sign_in_kakao.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { UsersRepository } from './users.repository';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from './schemas/user.schema';
 import { JwtService } from '@nestjs/jwt';
 import { InUpdateUserDto } from './dto/in_update_user.dto';
@@ -10,6 +16,10 @@ import { InSignInDto } from './dto/in_sign_in.dto';
 import * as firebase from 'firebase-admin';
 import * as serviceAccount from './serviceAccountKey.json';
 import mongoose from 'mongoose';
+import { OutSignInDto } from './dto/out_sign_in.dto';
+import { OutSignInKakaoDto } from './dto/out_sign_in_kakao.dto';
+import { OutGetUserDto } from './dto/out_get_user.dto';
+import { throwError } from 'rxjs';
 
 const firebase_params = {
   type: serviceAccount.type,
@@ -53,9 +63,13 @@ export class UserService {
     return this.usersRepository.create(inSignUpDto);
   }
 
-  async signIn(inSignInDto: InSignInDto): Promise<{ accessToken: string }> {
+  async signIn(inSignInDto: InSignInDto): Promise<OutSignInDto> {
     const { email } = inSignInDto;
     const payload = { email };
+
+    const exist = await this.usersRepository.findOne({ email });
+    if (exist == null) throw new ConflictException('user not exist');
+
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
   }
@@ -74,7 +88,7 @@ export class UserService {
 
   async signInKakao(
     inSignInKakaoDto: InSignInKakaoDto,
-  ): Promise<{ fbCustomToken: string }> {
+  ): Promise<OutSignInKakaoDto> {
     const uid = inSignInKakaoDto.uid;
     const updateParams = {
       email: inSignInKakaoDto.email,
