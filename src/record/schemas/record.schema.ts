@@ -10,7 +10,7 @@ export class Record {
   _id: string;
 
   @Prop()
-  workoutTime: Date;
+  workoutTime: number;
 
   @Prop()
   condition: RecordStatus;

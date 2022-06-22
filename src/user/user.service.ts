@@ -59,6 +59,7 @@ export class UserService {
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
   }
+
   async drop(user: User): Promise<OutCommonDto> {
     user.status = 'drop';
     const id = user._id;
@@ -70,6 +71,7 @@ export class UserService {
       return { result: true };
     }
   }
+
   async signInKakao(
     inSignInKakaoDto: InSignInKakaoDto,
   ): Promise<{ fbCustomToken: string }> {

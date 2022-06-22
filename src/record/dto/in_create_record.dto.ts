@@ -8,7 +8,7 @@ export class InCreateRecordDto {
     required: true,
   })
   @IsNotEmpty()
-  workoutTime: Date;
+  workoutTime: number;
 
   @ApiProperty({
     example: 'GT / VG / GD / NB / BD',

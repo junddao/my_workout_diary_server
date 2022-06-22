@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class OutGetRecordDto {
+export class OutGetRecordsDto {
   @ApiProperty({
     example: '62ab12a23e9e123a2c054f',
     description: 'id',

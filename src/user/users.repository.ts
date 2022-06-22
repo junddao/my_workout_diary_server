@@ -25,7 +25,7 @@ export class UsersRepository {
 
   async create(inSignUpDto: InSignUpDto): Promise<void> {
     try {
-      const newUser = { inSignUpDto, status: 'active' };
+      const newUser = { ...inSignUpDto, status: 'active' };
       await this.userModel.create(newUser);
     } catch (error) {
       if (error.code === '23505') {

@@ -1,3 +1,4 @@
+import { InGetRecordsDto } from './dto/in_get_records.dto';
 import { InCreateRecordDto } from './dto/in_create_record.dto';
 import { Injectable } from '@nestjs/common';
 import { RecordRepository } from './record.repository';
@@ -10,6 +11,17 @@ export class RecordService {
 
   async getRecord(_id: string): Promise<Record> {
     return this.recordRepository.findOne({ _id });
+  }
+
+  async getRecords(inGetRecordsDto: InGetRecordsDto): Promise<Record[]> {
+    const startDate = new Date(inGetRecordsDto.searchDate.toString());
+    const endDate = new Date();
+    endDate.setDate(startDate.getDate() + 1);
+    // endDate.setDate(startDate.getDate() + 1);
+
+    return this.recordRepository.find({
+      createdAt: { $gt: startDate, $lt: endDate },
+    });
   }
 
   async createRecord(inCreateRecordDto: InCreateRecordDto): Promise<Record> {

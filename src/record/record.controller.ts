@@ -1,3 +1,4 @@
+import { InGetRecordsDto } from './dto/in_get_records.dto';
 import { OutGetRecordDto } from './dto/out_get_record.dto';
 import { InCreateRecordDto } from './dto/in_create_record.dto';
 import { RecordService } from './record.service';
@@ -34,6 +35,21 @@ export class RecordController {
     return outGetRecordDto;
   }
 
+  @ApiOperation({ summary: '운동 기록 조회' })
+  @ApiResponse({
+    type: [OutGetRecordDto],
+    description: '운동기록 조회',
+    status: 200,
+  })
+  @Post('/get/records')
+  @UseGuards(AuthGuard())
+  async getRecords(
+    @Body() inGetRecordsDto: InGetRecordsDto,
+  ): Promise<OutGetRecordDto[]> {
+    const outGetRecordDto = this.recordService.getRecords(inGetRecordsDto);
+    return outGetRecordDto;
+  }
+
   @ApiOperation({ summary: '운동 기록 생성' })
   @ApiResponse({
     type: OutCreateRecordDto,
@@ -41,7 +57,6 @@ export class RecordController {
     status: 200,
   })
   @Post('/create')
-  @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard())
   async createRecord(
     @Body() inCreateRecordDto: InCreateRecordDto,
