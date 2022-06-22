@@ -60,7 +60,7 @@ export class UserService {
     return { accessToken };
   }
 
-  async drop(user: User): Promise<OutCommonDto> {
+  async drop(user: User): Promise<boolean> {
     user.status = 'drop';
     const id = user._id;
     const updatedUser = await this.usersRepository.findOneAndUpdate(
@@ -68,7 +68,7 @@ export class UserService {
       user,
     );
     if (updatedUser != null) {
-      return { result: true };
+      return true;
     }
   }
 

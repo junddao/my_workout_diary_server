@@ -35,17 +35,26 @@ export class UserController {
   })
   @Get('/me')
   @UseGuards(AuthGuard())
-  async getMe(@Req() req): Promise<OutGetMeDto> {
+  async getMe(@Req() req): Promise<OutCommonDto<OutGetMeDto>> {
     console.log(req);
-    const outGetMeDto = await this.userService.getMe(req.user);
-    return outGetMeDto;
+    const data = await this.userService.getMe(req.user);
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 
   @ApiOperation({ summary: '전체 유저 목록 조회' })
   @Get('/all')
   @UseGuards(AuthGuard())
-  async getUsers(): Promise<User[]> {
-    return this.userService.getUsers();
+  async getUsers(): Promise<OutCommonDto<User[]>> {
+    const data = await this.userService.getUsers();
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 
   @ApiOperation({ summary: 'id로 유저 목록 조회' })
@@ -56,9 +65,13 @@ export class UserController {
   })
   @Get('/get/:id')
   @UseGuards(AuthGuard())
-  async getUser(@Param('id') id: string): Promise<User> {
-    const outGetUserDto = await this.userService.getUser(id);
-    return outGetUserDto;
+  async getUser(@Param('id') id: string): Promise<OutCommonDto<User>> {
+    const data = await this.userService.getUser(id);
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 
   @ApiOperation({ summary: '회원가입' })
@@ -68,11 +81,15 @@ export class UserController {
     status: 200,
   })
   @Post('/signup')
-  async signUp(@Body() requestSignUpDto: InSignUpDto): Promise<OutCommonDto> {
+  async signUp(
+    @Body() requestSignUpDto: InSignUpDto,
+  ): Promise<OutCommonDto<null>> {
     await this.userService.signUp(requestSignUpDto);
-    const outCommonDto = new OutCommonDto();
-    outCommonDto.result = true;
-    return outCommonDto;
+    return {
+      success: true,
+      error: null,
+      data: null,
+    };
   }
 
   @ApiOperation({ summary: '회원탈퇴' })
@@ -83,9 +100,13 @@ export class UserController {
   })
   @Get('/drop')
   @UseGuards(AuthGuard())
-  async Drop(@Req() req): Promise<OutCommonDto> {
-    const outCommonDto = await this.userService.drop(req.user);
-    return outCommonDto;
+  async Drop(@Req() req): Promise<OutCommonDto<boolean>> {
+    const data = await this.userService.drop(req.user);
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 
   @ApiOperation({ summary: '로그인' })
@@ -97,8 +118,13 @@ export class UserController {
   @Post('/signin')
   async signIn(
     @Body() inSingInDto: InSignInDto,
-  ): Promise<{ accessToken: string }> {
-    return this.userService.signIn(inSingInDto);
+  ): Promise<OutCommonDto<{ accessToken: string }>> {
+    const data = await this.userService.signIn(inSingInDto);
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 
   @ApiOperation({ summary: '유저 정보 업데이트' })
@@ -107,8 +133,13 @@ export class UserController {
   async updateUser(
     @Param('id') id: string,
     @Body() inUpdateUserDto: InUpdateUserDto,
-  ): Promise<User> {
-    return this.userService.updateUser(id, inUpdateUserDto);
+  ): Promise<OutCommonDto<User>> {
+    const data = await this.userService.updateUser(id, inUpdateUserDto);
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 
   @ApiOperation({ summary: '카카오 로그인' })
@@ -120,8 +151,12 @@ export class UserController {
   @Post('/kakao')
   async signInKakao(
     @Body() inSignInKakao: InSignInKakaoDto,
-  ): Promise<OutSignInKakaoDto> {
-    const fbCustomToken = await this.userService.signInKakao(inSignInKakao);
-    return fbCustomToken;
+  ): Promise<OutCommonDto<OutSignInKakaoDto>> {
+    const data = await this.userService.signInKakao(inSignInKakao);
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 }

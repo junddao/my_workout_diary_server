@@ -14,9 +14,8 @@ export class RecordService {
   }
 
   async getRecords(inGetRecordsDto: InGetRecordsDto): Promise<Record[]> {
-    const startDate = new Date(inGetRecordsDto.searchDate.toString());
-    const endDate = new Date();
-    endDate.setDate(startDate.getDate() + 1);
+    const startDate = new Date(inGetRecordsDto.startDate.toString());
+    const endDate = new Date(inGetRecordsDto.endDate.toString());
     // endDate.setDate(startDate.getDate() + 1);
 
     return this.recordRepository.find({
