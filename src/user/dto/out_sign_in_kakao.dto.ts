@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { isNotEmpty, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class OutSignInKakaoDto {
   @ApiProperty({

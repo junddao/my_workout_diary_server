@@ -1,4 +1,4 @@
-import { OutCommonDto } from './../common/dto/out_common.dto';
+import { ResponseDto } from '../common/dto/response.dto';
 import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { User, UserDocument } from './schemas/user.schema';

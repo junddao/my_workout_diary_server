@@ -16,52 +16,54 @@ import { Record } from './schemas/record.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OutCreateRecordDto } from './dto/out_create_record.dto';
+import { ApiResponseDto, ResponseDto } from 'src/common/dto/response.dto';
 @ApiTags('Record')
 @Controller('record')
 export class RecordController {
   constructor(private readonly recordService: RecordService) {}
 
   @ApiOperation({ summary: '운동 기록 조회' })
-  @ApiResponse({
-    type: OutGetRecordDto,
-    description: '운동기록 조회',
-    status: 200,
-  })
+  @ApiResponseDto(OutGetRecordDto)
   @Get('/get/:id')
   @UseGuards(AuthGuard())
-  async getRecord(@Param('id') id: string): Promise<Record> {
-    const outGetRecordDto = this.recordService.getRecord(id);
-    return outGetRecordDto;
+  async getRecord(
+    @Param('id') id: string,
+  ): Promise<ResponseDto<OutGetRecordDto>> {
+    const data = await this.recordService.getRecord(id);
+    return {
+      success: true,
+      error: null,
+      data: [data],
+    };
   }
 
   @ApiOperation({ summary: '운동 기록 조회' })
-  @ApiResponse({
-    type: [OutGetRecordDto],
-    description: '운동기록 조회',
-    status: 200,
-  })
+  @ApiResponseDto(OutGetRecordDto)
   @Post('/get/records')
   @UseGuards(AuthGuard())
   async getRecords(
     @Body() inGetRecordsDto: InGetRecordsDto,
-  ): Promise<OutGetRecordDto[]> {
-    const outGetRecordDto = this.recordService.getRecords(inGetRecordsDto);
-    return outGetRecordDto;
+  ): Promise<ResponseDto<OutGetRecordDto>> {
+    const data = await this.recordService.getRecords(inGetRecordsDto);
+    return {
+      success: true,
+      error: null,
+      data: data,
+    };
   }
 
   @ApiOperation({ summary: '운동 기록 생성' })
-  @ApiResponse({
-    type: OutCreateRecordDto,
-    description: '생성된 운동기록',
-    status: 200,
-  })
+  @ApiResponseDto(OutGetRecordDto)
   @Post('/create')
   @UseGuards(AuthGuard())
   async createRecord(
     @Body() inCreateRecordDto: InCreateRecordDto,
-  ): Promise<Record> {
-    const outCreateRecordDto =
-      this.recordService.createRecord(inCreateRecordDto);
-    return outCreateRecordDto;
+  ): Promise<ResponseDto<OutGetRecordDto>> {
+    const data = await this.recordService.createRecord(inCreateRecordDto);
+    return {
+      success: true,
+      error: null,
+      data: [data],
+    };
   }
 }

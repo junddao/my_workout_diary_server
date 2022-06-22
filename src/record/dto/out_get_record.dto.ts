@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import RecordStatus from '../record_status.enum';
 
 export class OutGetRecordDto {
   @ApiProperty({
@@ -11,7 +12,7 @@ export class OutGetRecordDto {
   _id: string;
 
   @ApiProperty({
-    example: '2017-03-16T17:40:00+09:00',
+    example: '123',
     description: '운동시간',
     required: true,
   })
@@ -24,7 +25,7 @@ export class OutGetRecordDto {
     required: true,
   })
   @IsNotEmpty()
-  condition: string;
+  condition: RecordStatus;
 
   @ApiProperty({
     example: '2017-03-16T17:40:00+09:00',
