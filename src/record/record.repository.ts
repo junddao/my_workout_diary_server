@@ -2,7 +2,7 @@ import { InCreateRecordDto } from './dto/in_create_record.dto';
 import { Record, RecordDocument } from './schemas/record.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, FilterQuery } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class RecordRepository {
@@ -15,6 +15,17 @@ export class RecordRepository {
   }
   async find(recordFilterQuery: FilterQuery<Record>): Promise<Record[]> {
     return this.recordModel.find(recordFilterQuery);
+  }
+
+  async delete(recordFilterQuery: FilterQuery<Record>): Promise<void> {
+    try {
+      const result = await this.recordModel.deleteOne(recordFilterQuery);
+      if (result.deletedCount === 0) {
+        throw new NotFoundException(`can't find id`);
+      }
+    } catch (e) {
+      throw new NotFoundException(`can't delete this id`);
+    }
   }
 
   async createRecord(inCreateRecordDto: InCreateRecordDto): Promise<Record> {

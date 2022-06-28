@@ -14,8 +14,8 @@ export class RecordService {
   }
 
   async getRecords(inGetRecordsDto: InGetRecordsDto): Promise<Record[]> {
-    const startDate = new Date(inGetRecordsDto.startDate.toISOString());
-    const endDate = new Date(inGetRecordsDto.endDate.toISOString());
+    const startDate = new Date(inGetRecordsDto.startDate).toISOString();
+    const endDate = new Date(inGetRecordsDto.endDate).toISOString();
     console.log(endDate);
     // endDate.setDate(startDate.getDate() + 1);
 
@@ -26,5 +26,9 @@ export class RecordService {
 
   async createRecord(inCreateRecordDto: InCreateRecordDto): Promise<Record> {
     return this.recordRepository.createRecord(inCreateRecordDto);
+  }
+
+  async deleteRecord(_id: string): Promise<void> {
+    await this.recordRepository.delete({ _id });
   }
 }

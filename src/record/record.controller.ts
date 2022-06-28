@@ -5,6 +5,7 @@ import { RecordService } from './record.service';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -49,6 +50,18 @@ export class RecordController {
       success: true,
       error: null,
       data: data,
+    };
+  }
+
+  @ApiOperation({ summary: '운동 기록 삭제' })
+  @Delete('/delete/:id')
+  @UseGuards(AuthGuard())
+  async deleteRecord(@Param('id') id: string): Promise<ResponseDto<null>> {
+    await this.recordService.deleteRecord(id);
+    return {
+      success: true,
+      error: null,
+      data: null,
     };
   }
 
