@@ -44,6 +44,13 @@ export class OutGetUserDto {
   // status (signed, active, left)
 
   @ApiProperty({
+    example: 'kakao / apple',
+    description: '로그인 소셜 정보',
+    required: true,
+  })
+  social: string;
+
+  @ApiProperty({
     example: 'true / false',
     description: 'push 여부',
     required: false,

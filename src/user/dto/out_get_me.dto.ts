@@ -40,6 +40,13 @@ export class OutGetMeDto {
   })
   profileImage: string;
 
+  @ApiProperty({
+    example: 'kakao / apple',
+    description: '로그인 소셜 정보',
+    required: true,
+  })
+  social: string;
+
   // @IsNotEmpty()
   // status (signed, active, left)
 
