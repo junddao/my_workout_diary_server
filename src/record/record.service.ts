@@ -14,12 +14,13 @@ export class RecordService {
   }
 
   async getRecords(inGetRecordsDto: InGetRecordsDto): Promise<Record[]> {
-    const startDate = new Date(inGetRecordsDto.startDate.toString());
-    const endDate = new Date(inGetRecordsDto.endDate.toString());
+    const startDate = new Date(inGetRecordsDto.startDate.toISOString());
+    const endDate = new Date(inGetRecordsDto.endDate.toISOString());
+    console.log(endDate);
     // endDate.setDate(startDate.getDate() + 1);
 
     return this.recordRepository.find({
-      createdAt: { $gt: startDate, $lt: endDate },
+      startTime: { $gt: startDate, $lt: endDate },
     });
   }
 
