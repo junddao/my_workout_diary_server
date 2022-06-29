@@ -1,3 +1,5 @@
+import { UserSchema } from './../user/schemas/user.schema';
+import { UsersRepository } from './../user/users.repository';
 import { InGetTopRankersDto } from './dto/in_get_top_rankers.dto';
 import { InGetRecordsDto } from './dto/in_get_records.dto';
 import { InCreateRecordDto } from './dto/in_create_record.dto';
@@ -7,7 +9,7 @@ import { Record } from './schemas/record.schema';
 import { OutGetRecordDto } from './dto/out_get_record.dto';
 import { OutGetTopRankersDto } from './dto/out_get_top_rankers.dto';
 import { map } from 'rxjs';
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 @Injectable()
 export class RecordService {
@@ -43,26 +45,38 @@ export class RecordService {
     // 1. 기간내 모든 기록을 가져오고
     const startDate = new Date(inGetTopRankersDto.startDate).toISOString();
     const endDate = new Date(inGetTopRankersDto.endDate).toISOString();
-    const records = await this.recordRepository.find({
-      startTime: { $gt: startDate, $lt: endDate },
-    });
+    const records = await this.recordRepository.findWithProduct(
+      startDate,
+      endDate,
+    );
+
     // 2. userid로 workoutTime을 sum 한다.
     const rankers: OutGetTopRankersDto[] = [];
     records.forEach(function (record) {
-      const ranker = rankers.find((ojb) => {
-        return ojb.userId === record.userId;
+      const ranker = rankers.find((obj) => {
+        return obj.userId.toString() === record.userId.toString();
       });
+
       if (ranker === undefined) {
         const newRanker: OutGetTopRankersDto = {
           userId: record.userId,
           totalWorkoutTime: record.workoutTime,
           userName: '',
           profileImage: '',
+          workoutDates: [record.startTime],
           ranking: 0,
         };
         rankers.push(newRanker);
       } else {
         ranker.totalWorkoutTime += record.workoutTime;
+        const temp = ranker.workoutDates.find((date) => {
+          console.log(date.getDay());
+          console.log(record.startTime.getDay());
+          return date.getDay() === record.startTime.getDay();
+        });
+        if (temp === undefined) {
+          ranker.workoutDates.push(record.startTime);
+        }
       }
     });
     // 3. sort 하고

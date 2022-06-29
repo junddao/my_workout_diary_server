@@ -35,6 +35,14 @@ export class OutGetTopRankersDto {
   totalWorkoutTime: number;
 
   @ApiProperty({
+    example: '123',
+    description: '이번달 총 운동시간',
+    required: true,
+  })
+  @IsNotEmpty()
+  workoutDates: [Date];
+
+  @ApiProperty({
     example: '1',
     description: '랭킹',
     required: true,

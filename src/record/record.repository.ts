@@ -1,3 +1,4 @@
+import { User, UserDocument } from './../user/schemas/user.schema';
 import { InCreateRecordDto } from './dto/in_create_record.dto';
 import { Record, RecordDocument } from './schemas/record.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,6 +16,23 @@ export class RecordRepository {
   }
   async find(recordFilterQuery: FilterQuery<Record>): Promise<Record[]> {
     return this.recordModel.find(recordFilterQuery);
+  }
+  async findWithProduct(startDate: string, endDate: string): Promise<Record[]> {
+    const result = await this.recordModel.aggregate([
+      {
+        $match: {
+          startTime: { $gt: startDate, $lt: endDate },
+        },
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userName',
+        },
+      },
+    ]);
+
+    return result;
   }
 
   async delete(recordFilterQuery: FilterQuery<Record>): Promise<void> {
