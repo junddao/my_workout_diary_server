@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { ObjectId } from 'mongoose';
 import RecordStatus from '../record_status.enum';
 
 export class OutGetRecordDto {
@@ -9,7 +10,15 @@ export class OutGetRecordDto {
     required: true,
   })
   @IsNotEmpty()
-  _id: string;
+  _id: ObjectId;
+
+  @ApiProperty({
+    example: '1123sadad123wedqe',
+    description: '생성 유저의 id',
+    required: true,
+  })
+  @IsNotEmpty()
+  userId: ObjectId;
 
   @ApiProperty({
     example: '123',

@@ -1,24 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ApiProperty } from '@nestjs/swagger';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, ObjectId } from 'mongoose';
 import RecordStatus from '../record_status.enum';
 
 export type RecordDocument = Record & Document;
 
 @Schema({ timestamps: true })
 export class Record {
-  _id: string;
+  _id: ObjectId;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+  userId: ObjectId;
 
   @Prop()
   workoutTime: number;
 
-  @Prop()
+  @Prop({ required: true })
   condition: RecordStatus;
 
-  @Prop()
+  @Prop({ required: true })
   startTime: Date;
 
-  @Prop()
+  @Prop({ required: true })
   endTime: Date;
 
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })

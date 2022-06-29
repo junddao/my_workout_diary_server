@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class InUpdateUserDto {
   @ApiProperty({
@@ -8,7 +9,7 @@ export class InUpdateUserDto {
     required: true,
   })
   @IsNotEmpty()
-  _id: string;
+  _id: ObjectId;
 
   @ApiProperty({
     example: 'junddao@kakao.com',

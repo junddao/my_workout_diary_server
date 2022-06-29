@@ -1,7 +1,7 @@
 import { InCreateRecordDto } from './dto/in_create_record.dto';
 import { Record, RecordDocument } from './schemas/record.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
+import { Model, FilterQuery, ObjectId } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
@@ -28,8 +28,12 @@ export class RecordRepository {
     }
   }
 
-  async createRecord(inCreateRecordDto: InCreateRecordDto): Promise<Record> {
+  async createRecord(
+    inCreateRecordDto: InCreateRecordDto,
+    userId: ObjectId,
+  ): Promise<Record> {
     const createdRecord = new this.recordModel(inCreateRecordDto);
+    createdRecord.userId = userId;
     return createdRecord.save();
   }
 }
