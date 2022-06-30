@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class OutCreateRecordDto {
   @ApiProperty({
@@ -8,7 +9,15 @@ export class OutCreateRecordDto {
     required: true,
   })
   @IsNotEmpty()
-  _id: string;
+  _id: ObjectId;
+
+  @ApiProperty({
+    example: '1123sadad123wedqe',
+    description: '생성 유저의 id',
+    required: true,
+  })
+  @IsNotEmpty()
+  userId: ObjectId;
 
   @ApiProperty({
     example: '2017-03-16T17:40:00+09:00',

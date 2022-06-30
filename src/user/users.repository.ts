@@ -44,7 +44,9 @@ export class UsersRepository {
     const updateUser = inUpdateUserDto;
 
     try {
-      return this.userModel.findOneAndUpdate(userFilterQuery, updateUser);
+      return this.userModel.findOneAndUpdate(userFilterQuery, updateUser, {
+        new: true,
+      });
     } catch (e) {
       throw new InternalServerErrorException();
     }

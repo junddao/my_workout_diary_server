@@ -8,7 +8,6 @@ import {
   Controller,
   Get,
   Param,
-  Patch,
   Post,
   Req,
   UseGuards,
@@ -110,12 +109,12 @@ export class UserController {
 
   @ApiOperation({ summary: '유저 정보 업데이트' })
   @ApiResponseDto(OutGetUserDto)
-  @Patch('/update/:id')
+  @Post('/update')
   @UseGuards(AuthGuard())
   async updateUser(
-    @Param('id') id: string,
     @Body() inUpdateUserDto: InUpdateUserDto,
   ): Promise<ResponseDto<OutGetUserDto>> {
+    const id = inUpdateUserDto._id;
     const data = await this.userService.updateUser(id, inUpdateUserDto);
     return {
       success: true,

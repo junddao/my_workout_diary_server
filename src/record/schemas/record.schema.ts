@@ -1,24 +1,27 @@
+import { UserDocument } from './../../user/schemas/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ApiProperty } from '@nestjs/swagger';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, ObjectId } from 'mongoose';
 import RecordStatus from '../record_status.enum';
 
 export type RecordDocument = Record & Document;
 
 @Schema({ timestamps: true })
 export class Record {
-  _id: string;
+  _id: ObjectId;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+  userId: ObjectId;
 
   @Prop()
   workoutTime: number;
 
-  @Prop()
+  @Prop({ required: true })
   condition: RecordStatus;
 
-  @Prop()
+  @Prop({ required: true })
   startTime: Date;
 
-  @Prop()
+  @Prop({ required: true })
   endTime: Date;
 
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
@@ -29,3 +32,10 @@ export class Record {
 }
 
 export const RecordSchema = SchemaFactory.createForClass(Record);
+
+// RecordSchema.virtual('user', {
+//   ref: 'User', // 참조할 collections
+//   localField: 'userId', // 현재 스키마에 선언되어 있는 참조할 필드
+//   foreignField: '_id', // collections에서 참조할 필드
+//   justOne: true, // 하나만 반환하는지 여부
+// });

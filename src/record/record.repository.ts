@@ -1,8 +1,9 @@
+import { User, UserDocument } from './../user/schemas/user.schema';
 import { InCreateRecordDto } from './dto/in_create_record.dto';
 import { Record, RecordDocument } from './schemas/record.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Model, FilterQuery, ObjectId } from 'mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class RecordRepository {
@@ -16,9 +17,41 @@ export class RecordRepository {
   async find(recordFilterQuery: FilterQuery<Record>): Promise<Record[]> {
     return this.recordModel.find(recordFilterQuery);
   }
+  async findWithProduct(startDate: string, endDate: string): Promise<Record[]> {
+    const result = await this.recordModel.aggregate([
+      {
+        $match: {
+          startTime: { $gt: startDate, $lt: endDate },
+        },
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userName',
+        },
+      },
+    ]);
 
-  async createRecord(inCreateRecordDto: InCreateRecordDto): Promise<Record> {
+    return result;
+  }
+
+  async delete(recordFilterQuery: FilterQuery<Record>): Promise<void> {
+    try {
+      const result = await this.recordModel.deleteOne(recordFilterQuery);
+      if (result.deletedCount === 0) {
+        throw new NotFoundException(`can't find id`);
+      }
+    } catch (e) {
+      throw new NotFoundException(`can't delete this id`);
+    }
+  }
+
+  async createRecord(
+    inCreateRecordDto: InCreateRecordDto,
+    userId: ObjectId,
+  ): Promise<Record> {
     const createdRecord = new this.recordModel(inCreateRecordDto);
+    createdRecord.userId = userId;
     return createdRecord.save();
   }
 }

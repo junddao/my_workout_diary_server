@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class OutGetUserDto {
   @ApiProperty({
@@ -8,7 +9,7 @@ export class OutGetUserDto {
     required: true,
   })
   @IsNotEmpty()
-  _id: string;
+  _id: ObjectId;
 
   @ApiProperty({
     example: 'junddao@kakao.com',
@@ -42,6 +43,13 @@ export class OutGetUserDto {
 
   // @IsNotEmpty()
   // status (signed, active, left)
+
+  @ApiProperty({
+    example: 'kakao / apple',
+    description: '로그인 소셜 정보',
+    required: true,
+  })
+  social: string;
 
   @ApiProperty({
     example: 'true / false',

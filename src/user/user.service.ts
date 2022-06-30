@@ -15,7 +15,7 @@ import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { InSignInDto } from './dto/in_sign_in.dto';
 import * as firebase from 'firebase-admin';
 import * as serviceAccount from './serviceAccountKey.json';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { OutSignInDto } from './dto/out_sign_in.dto';
 import { OutSignInKakaoDto } from './dto/out_sign_in_kakao.dto';
 import { OutGetUserDto } from './dto/out_get_user.dto';
@@ -119,7 +119,7 @@ export class UserService {
   }
 
   async updateUser(
-    id: string,
+    id: ObjectId,
     inUpdateUserDto: InUpdateUserDto,
   ): Promise<User> {
     return this.usersRepository.findOneAndUpdate({ id }, inUpdateUserDto);
