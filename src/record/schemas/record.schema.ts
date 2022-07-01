@@ -29,6 +29,8 @@ export class Record {
 
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   updatedAt: Date;
+
+  userName: string;
 }
 
 export const RecordSchema = SchemaFactory.createForClass(Record);

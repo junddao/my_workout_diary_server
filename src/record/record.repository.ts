@@ -17,17 +17,24 @@ export class RecordRepository {
   async find(recordFilterQuery: FilterQuery<Record>): Promise<Record[]> {
     return this.recordModel.find(recordFilterQuery);
   }
-  async findWithProduct(startDate: string, endDate: string): Promise<Record[]> {
+  async findWithProduct(startDate: Date, endDate: Date): Promise<Record[]> {
     const result = await this.recordModel.aggregate([
       {
         $match: {
           startTime: { $gt: startDate, $lt: endDate },
         },
+      },
+      {
         $lookup: {
-          from: 'user',
+          from: 'users',
           localField: 'userId',
           foreignField: '_id',
           as: 'userName',
+        },
+      },
+      {
+        $addFields: {
+          userName: { $arrayElemAt: ['$userName.name', 0] },
         },
       },
     ]);

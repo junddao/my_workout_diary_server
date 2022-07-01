@@ -8,6 +8,7 @@ import { RecordController } from './record/record.controller';
 import { RecordService } from './record/record.service';
 import { RecordModule } from './record/record.module';
 import { LoggerMiddleware } from './logger.middleware';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { LoggerMiddleware } from './logger.middleware';
     }),
     UserModule,
     RecordModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

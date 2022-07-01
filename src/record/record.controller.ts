@@ -1,8 +1,3 @@
-import { OutGetTopRankersDto } from './dto/out_get_top_rankers.dto';
-import { InGetRecordsDto } from './dto/in_get_records.dto';
-import { OutGetRecordDto } from './dto/out_get_record.dto';
-import { InCreateRecordDto } from './dto/in_create_record.dto';
-import { RecordService } from './record.service';
 import {
   Body,
   Controller,
@@ -11,17 +6,18 @@ import {
   Param,
   Post,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
-import { Record } from './schemas/record.schema';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OutCreateRecordDto } from './dto/out_create_record.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiResponseDto, ResponseDto } from 'src/common/dto/response.dto';
-import { InGetTopRankersDto } from './dto/in_get_top_rankers.dto';
 import { GetUser } from 'src/user/get-user.decorator';
 import { User } from 'src/user/schemas/user.schema';
+import { InCreateRecordDto } from './dto/in_create_record.dto';
+import { InGetRecordsDto } from './dto/in_get_records.dto';
+import { InGetTopRankersDto } from './dto/in_get_top_rankers.dto';
+import { OutGetRecordDto } from './dto/out_get_record.dto';
+import { OutGetTopRankersDto } from './dto/out_get_top_rankers.dto';
+import { RecordService } from './record.service';
 @ApiTags('Record')
 @Controller('record')
 export class RecordController {
@@ -48,8 +44,9 @@ export class RecordController {
   @UseGuards(AuthGuard())
   async getRecords(
     @Body() inGetRecordsDto: InGetRecordsDto,
+    @GetUser() user: User,
   ): Promise<ResponseDto<OutGetRecordDto>> {
-    const data = await this.recordService.getRecords(inGetRecordsDto);
+    const data = await this.recordService.getRecords(inGetRecordsDto, user._id);
     return {
       success: true,
       error: null,

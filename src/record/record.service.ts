@@ -19,12 +19,16 @@ export class RecordService {
     return this.recordRepository.findOne({ _id });
   }
 
-  async getRecords(inGetRecordsDto: InGetRecordsDto): Promise<Record[]> {
+  async getRecords(
+    inGetRecordsDto: InGetRecordsDto,
+    id: ObjectId,
+  ): Promise<Record[]> {
     const startDate = new Date(inGetRecordsDto.startDate).toISOString();
     const endDate = new Date(inGetRecordsDto.endDate).toISOString();
 
     return this.recordRepository.find({
       startTime: { $gt: startDate, $lt: endDate },
+      userId: id,
     });
   }
 
@@ -43,11 +47,9 @@ export class RecordService {
     inGetTopRankersDto: InGetTopRankersDto,
   ): Promise<OutGetTopRankersDto[]> {
     // 1. 기간내 모든 기록을 가져오고
-    const startDate = new Date(inGetTopRankersDto.startDate).toISOString();
-    const endDate = new Date(inGetTopRankersDto.endDate).toISOString();
     const records = await this.recordRepository.findWithProduct(
-      startDate,
-      endDate,
+      new Date(inGetTopRankersDto.startDate),
+      new Date(inGetTopRankersDto.endDate),
     );
 
     // 2. userid로 workoutTime을 sum 한다.
@@ -61,7 +63,7 @@ export class RecordService {
         const newRanker: OutGetTopRankersDto = {
           userId: record.userId,
           totalWorkoutTime: record.workoutTime,
-          userName: '',
+          userName: record.userName,
           profileImage: '',
           workoutDates: [record.startTime],
           ranking: 0,
