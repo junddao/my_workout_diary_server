@@ -1,21 +1,19 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { RecordController } from './record/record.controller';
-import { RecordService } from './record/record.service';
-import { RecordModule } from './record/record.module';
 import { LoggerMiddleware } from './logger.middleware';
+import { RecordModule } from './record/record.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath:
-        process.env.NODE_ENV === 'dev' ? './env/dev.env' : './env/local.env',
+        process.env.NODE_ENV === 'dev' ? './env/dev.env' : './env/prod.env',
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

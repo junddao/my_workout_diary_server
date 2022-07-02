@@ -1,15 +1,11 @@
-import { UserSchema } from './../user/schemas/user.schema';
-import { UsersRepository } from './../user/users.repository';
-import { InGetTopRankersDto } from './dto/in_get_top_rankers.dto';
-import { InGetRecordsDto } from './dto/in_get_records.dto';
-import { InCreateRecordDto } from './dto/in_create_record.dto';
 import { Injectable } from '@nestjs/common';
+import { ObjectId } from 'mongoose';
+import { InCreateRecordDto } from './dto/in_create_record.dto';
+import { InGetRecordsDto } from './dto/in_get_records.dto';
+import { InGetTopRankersDto } from './dto/in_get_top_rankers.dto';
+import { OutGetTopRankersDto } from './dto/out_get_top_rankers.dto';
 import { RecordRepository } from './record.repository';
 import { Record } from './schemas/record.schema';
-import { OutGetRecordDto } from './dto/out_get_record.dto';
-import { OutGetTopRankersDto } from './dto/out_get_top_rankers.dto';
-import { map } from 'rxjs';
-import mongoose, { ObjectId } from 'mongoose';
 
 @Injectable()
 export class RecordService {

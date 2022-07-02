@@ -1,4 +1,3 @@
-import { UserDocument } from './../../user/schemas/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, ObjectId } from 'mongoose';
 import RecordStatus from '../record_status.enum';
