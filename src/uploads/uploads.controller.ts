@@ -24,7 +24,9 @@ export class UploadsController {
     });
     try {
       const BUCKET_NAME = this.config.get('AWS_BUCKET_NAME');
-      const objectName = `${Date.now().toString()}-${file.originalname}`;
+      const objectName = `profile_image/${Date.now().toString()}-${
+        file.originalname
+      }`;
       const upload = await new AWS.S3()
         .putObject({
           Key: objectName,
@@ -33,7 +35,7 @@ export class UploadsController {
         })
         .promise();
       console.log(upload);
-      const url = `https://${BUCKET_NAME}.s3.amazonews.com/${objectName}`;
+      const url = `https://${BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/${objectName}`;
       return {
         success: true,
         error: null,

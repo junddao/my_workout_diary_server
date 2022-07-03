@@ -29,12 +29,13 @@ export class RecordRepository {
           from: 'users',
           localField: 'userId',
           foreignField: '_id',
-          as: 'userName',
+          as: 'user',
         },
       },
       {
         $addFields: {
-          userName: { $arrayElemAt: ['$userName.name', 0] },
+          userName: { $arrayElemAt: ['$user.name', 0] },
+          profileImage: { $arrayElemAt: ['$user.profileImage', 0] },
         },
       },
     ]);

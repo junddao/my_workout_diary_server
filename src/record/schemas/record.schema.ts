@@ -30,6 +30,8 @@ export class Record {
   updatedAt: Date;
 
   userName: string;
+
+  profileImage: string;
 }
 
 export const RecordSchema = SchemaFactory.createForClass(Record);

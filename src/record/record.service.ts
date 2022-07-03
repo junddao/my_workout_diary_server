@@ -60,7 +60,7 @@ export class RecordService {
           userId: record.userId,
           totalWorkoutTime: record.workoutTime,
           userName: record.userName,
-          profileImage: '',
+          profileImage: record.profileImage,
           workoutDates: [record.startTime],
           ranking: 0,
         };
