@@ -7,13 +7,24 @@ on:
   # Triggers the workflow on push or pull request events but only for the "develop" branch
   push:
     branches: [ "develop" ]
-
+  
 jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout source code
         uses: actions/checkout@master
+        
+      - name: GitHub Action for Firebase
+        # You may pin to the exact commit or the version.
+        # uses: w9jds/firebase-action@9ec7761096e04c7578c72d1a11ef700a1292db4c
+        uses: w9jds/firebase-action@v2.2.2
+        
+      - name: GCP Github Action
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+            service_account_key: ${{ secrets.GCP_SA_KEY }}
+            project_id: ${{ secrets.GCP_PROJECT_ID }}
  
       - name: Cache node modules
         uses: actions/cache@v1
