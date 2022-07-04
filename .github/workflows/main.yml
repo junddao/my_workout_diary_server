@@ -17,13 +17,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@master
         
-      - name: create env file
-        working-directory: ./env
-        run: |
-          touch dev.env
-          cat << EOF >> .env
-          ${{ secrets.ENV }}
-        
       - name: Write dev.env
         env:
           DEV_ENV: ${{ secrets.DEV_ENV }}
