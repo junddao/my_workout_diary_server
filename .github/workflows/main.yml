@@ -68,7 +68,7 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            dist s3://${{ secrets.AWS_BUCKET_NAME }}/dist/$GITHUB_SHA.tgz
+            ./$GITHUB_SHA.tgz s3://${{ secrets.AWS_BUCKET_NAME }}/dist/$GITHUB_SHA.tgz
             
       - name: Deploy with AWS codedeploy
         run: aws deploy create-deployment
