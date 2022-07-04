@@ -72,7 +72,7 @@ jobs:
             
       - name: Deploy with AWS codedeploy
         run: aws deploy create-deployment
-          -application-name my-workout-diary-deploy
+          --application-name my-workout-diary-deploy
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name develop
           --s3-location bucket=my-workout-diary-bucket,bundleType=tgz,key=dist/$GITHUB_SHA.tgz
