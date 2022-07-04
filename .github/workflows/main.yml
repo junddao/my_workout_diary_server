@@ -8,8 +8,7 @@ on:
   push:
     branches: [ "develop" ]
     
-env:
-  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
 
 jobs:
   deploy:
@@ -19,6 +18,8 @@ jobs:
         uses: actions/checkout@master
         
       - name: Write serviceAccountKey.json
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
           touch src/user/serviceAccountKey.json
           echo $GCP_SA_KEY >> src/user/serviceAccountKey.json
@@ -37,7 +38,7 @@ jobs:
         run: npm install
  
       - name: Build
-        run: npm run build
+        run: yarn build
  
       - name: Deploy
         env:
