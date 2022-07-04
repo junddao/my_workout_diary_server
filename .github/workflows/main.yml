@@ -70,11 +70,10 @@ jobs:
             --region ap-northeast-2 \
             dist s3://${{ secrets.AWS_BUCKET_NAME }}/dist
             
-            
-      ### 새로 추가한 부분 ###
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name my-workout-diary-deploy \
-              --deployment-config-name CodeDeployDefault.AllAtOnce \
-              --deployment-group-name develop \
-              --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }} \
-              ,bundleType=tgz,key=dist/$GITHUB_SHA.tgz
+        run: |
+          aws deploy create-deployment --application-name my-workout-diary-deploy \
+            --file-exists-behavior OVERWRITE \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name develop \
+            --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }},bundleType=tgz,key=dist/$GITHUB_SHA.tgz
