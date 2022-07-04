@@ -21,7 +21,6 @@ jobs:
         env:
           DEV_ENV: ${{ secrets.DEV_ENV }}
         run: |
-          mkdir env
           touch env/dev.env
           echo $DEV_ENV >> env/dev.env
           cat  env/dev.env
@@ -56,8 +55,12 @@ jobs:
  
       - name: Build
         run: yarn build
+        
+      - name: Make Tar File
+        run: tar -cpvzf ./$GITHUB_SHA.tgz *
+        shell: bash
  
-      - name: Deploy
+      - name: Upload to S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
@@ -66,3 +69,12 @@ jobs:
             --recursive \
             --region ap-northeast-2 \
             dist s3://${{ secrets.AWS_BUCKET_NAME }}/dist
+            
+            
+      ### 새로 추가한 부분 ###
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name my-workout-diary-deploy \
+              --deployment-config-name CodeDeployDefault.AllAtOnce \
+              --deployment-group-name develop \
+              --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }} \
+              ,bundleType=tgz,key=dist/$GITHUB_SHA.tgz
