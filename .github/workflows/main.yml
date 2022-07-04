@@ -17,13 +17,28 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@master
         
-      - name: Write serviceAccountKey.json
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      - name: create env file
+        working-directory: ./env
         run: |
-          touch src/user/serviceAccountKey.json
-          echo $GCP_SA_KEY >> src/user/serviceAccountKey.json
-          cat  src/user/serviceAccountKey.json
+          touch dev.env
+          cat << EOF >> .env
+          ${{ secrets.ENV }}
+        
+      - name: Write dev.env
+        env:
+          DEV_ENV: ${{ secrets.DEV_ENV }}
+        run: |
+          touch env/dev.env
+          echo $DEV_ENV >> env/dev.env
+          cat  env/dev.env
+          
+      - name: Write prod.env
+        env:
+          PROD_ENV: ${{ secrets.PROD_ENV }}
+        run: |
+          touch env/prod.env
+          echo $PROD_ENV >> env/prod.env
+          cat  env/prod.env
  
       - name: Cache node modules
         uses: actions/cache@v1
