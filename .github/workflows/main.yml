@@ -33,6 +33,14 @@ jobs:
           touch env/prod.env
           echo $PROD_ENV >> env/prod.env
           cat  env/prod.env
+          
+      - name: Write serviceAccountKey.json
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          touch src/user/serviceAccountKey.json
+          echo $GCP_SA_KEY >> src/user/serviceAccountKey.json
+          cat  src/user/serviceAccountKey.json
  
       - name: Cache node modules
         uses: actions/cache@v1
