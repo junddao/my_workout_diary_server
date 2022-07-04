@@ -1,0 +1,80 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "develop" branch
+  push:
+    branches: [ "develop" ]
+    
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@master
+        
+      - name: Write dev.env
+        env:
+          DEV_ENV: ${{ secrets.DEV_ENV }}
+        run: |
+          touch env/dev.env
+          echo $DEV_ENV >> env/dev.env
+          cat  env/dev.env
+          
+      - name: Write prod.env
+        env:
+          PROD_ENV: ${{ secrets.PROD_ENV }}
+        run: |
+          touch env/prod.env
+          echo $PROD_ENV >> env/prod.env
+          cat  env/prod.env
+          
+      - name: Write serviceAccountKey.json
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          touch src/user/serviceAccountKey.json
+          echo $GCP_SA_KEY >> src/user/serviceAccountKey.json
+          cat  src/user/serviceAccountKey.json
+ 
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+ 
+      - name: Install Dependencies
+        run: npm install
+ 
+      - name: Build
+        run: yarn build
+        
+      - name: Make Tar File
+        run: tar -cpvzf ./$GITHUB_SHA.tgz *
+        shell: bash
+ 
+      - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        run: |
+          aws s3 cp \
+            --recursive \
+            --region ap-northeast-2 \
+            dist s3://${{ secrets.AWS_BUCKET_NAME }}/dist
+            
+            
+      ### 새로 추가한 부분 ###
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name my-workout-diary-deploy \
+              --deployment-config-name CodeDeployDefault.AllAtOnce \
+              --deployment-group-name develop \
+              --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }} \
+              ,bundleType=tgz,key=dist/$GITHUB_SHA.tgz
