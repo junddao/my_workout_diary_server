@@ -65,9 +65,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
         run: |
-          aws s3 cp \
-            --recursive
-            --region ap-northeast-2 ./$GITHUB_SHA.tgz s3://${{ secrets.AWS_BUCKET_NAME }}/
+          aws s3 cp --recursive --region ap-northeast-2 ./$GITHUB_SHA.tgz s3://${{ secrets.AWS_BUCKET_NAME }}/
             
       - name: Deploy with AWS codedeploy
         run: aws deploy create-deployment
