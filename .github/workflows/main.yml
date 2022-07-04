@@ -57,7 +57,7 @@ jobs:
         run: yarn build
         
       - name: Make zip File
-        run: zip -r ./$GITHUB_SHA.zip ./dist/*
+        run: zip -r ./$GITHUB_SHA.zip *
         shell: bash
  
       - name: Upload to S3
@@ -68,7 +68,7 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            ./$GITHUB_SHA.zip s3://${{ secrets.AWS_BUCKET_NAME }}/dist/$GITHUB_SHA.tgz
+            ./$GITHUB_SHA.zip s3://${{ secrets.AWS_BUCKET_NAME }}/dist/
             
       - name: Deploy with AWS codedeploy
         run: aws deploy create-deployment
