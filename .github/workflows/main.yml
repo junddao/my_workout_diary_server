@@ -21,6 +21,7 @@ jobs:
         env:
           DEV_ENV: ${{ secrets.DEV_ENV }}
         run: |
+          mkdir env
           touch env/dev.env
           echo $DEV_ENV >> env/dev.env
           cat  env/dev.env
