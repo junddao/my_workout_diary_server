@@ -4,11 +4,15 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/my_workout_diary_server
+    overwrite: yes
+    
 permissions:
   - object: /home/ubuntu/my_workout_diary_server
+    pattern: "**"
     owner: ubuntu
     group: ubuntu
     mode: 755
+    
 hooks:
   ApplicationStart:
     - location: scripts/gh_deploy.sh
