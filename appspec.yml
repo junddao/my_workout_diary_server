@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/my_workout_diary_server
+permissions:
+  - object: /home/ubuntu/my_workout_diary_server
+    owner: ubuntu
+    group: ubuntu
+    mode: 755
+hooks:
+  ApplicationStart:
+    - location: scripts/gh_deploy.sh
+      timeout: 60
+      runas: ubuntu
