@@ -57,7 +57,7 @@ jobs:
         run: yarn build
         
       - name: Make zip File
-        run: tar -cpvzf ./$GITHUB_SHA.tgz *
+        run: tar -cpvzf ./deploy_files.tgz *
         shell: bash
  
       - name: Upload to S3
@@ -65,11 +65,11 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
         run: |
-          aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tgz s3://${{ secrets.AWS_BUCKET_NAME }}/$GITHUB_SHA.tgz
+          aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tgz s3://${{ secrets.AWS_BUCKET_NAME }}/deploy_files.tgz
             
       - name: Deploy with AWS codedeploy
         run: aws deploy create-deployment --application-name my-workout-diary-deploy \
           --file-exists-behavior OVERWRITE \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name develop \
-          --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }},bundleType=tgz,key=$GITHUB_SHA.tgz
+          --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }},bundleType=tgz,key=deploy_files.tgz
