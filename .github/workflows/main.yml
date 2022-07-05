@@ -8,7 +8,8 @@ on:
   push:
     branches: [ "develop" ]
     
-
+env:
+  S3_BUCKET_NAME: my-workout-diary-bucket
 
 jobs:
   deploy:
@@ -57,7 +58,7 @@ jobs:
         run: yarn build
         
       - name: Make zip File
-        run: tar -cpvzf ./deploy_files.tgz *
+        run: tar -cpvzf ./$GITHUB_SHA.tgz *
         shell: bash
  
       - name: Upload to S3
@@ -65,7 +66,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
         run: |
-          aws s3 cp --region ap-northeast-2 ./deploy_files.tgz s3://${{ secrets.AWS_BUCKET_NAME }}/deploy_files.tgz
+          aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tgz s3://${{ secrets.AWS_BUCKET_NAME }}/$GITHUB_SHA.tgz
           
       - name: Code Deploy
         run: | 
@@ -73,4 +74,4 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --application-name my-workout-diary-deploy \
           --deployment-group-name develop \
-          --s3-location bucket=${{ secrets.AWS_BUCKET_NAME }},bundleType=tgz,key=deploy_files.tgz
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=tgz,key=$GITHUB_SHA.tgz
