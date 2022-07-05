@@ -8,7 +8,6 @@ files:
     
 permissions:
   - object: /home/ubuntu/my_workout_diary_server
-    pattern: "**"
     owner: ubuntu
     group: ubuntu
     mode: 755
@@ -17,4 +16,4 @@ hooks:
   ApplicationStart:
     - location: scripts/gh_deploy.sh
       timeout: 60
-      runas: ubuntu
+      runas: root
