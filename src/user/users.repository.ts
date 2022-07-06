@@ -1,15 +1,14 @@
-import { ResponseDto } from '../common/dto/response.dto';
-import { InUpdateUserDto } from './dto/in_update_user.dto';
-import { InSignUpDto } from './dto/in_sign_up.dto';
-import { User, UserDocument } from './schemas/user.schema';
 import {
   ConflictException,
+  ConsoleLogger,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import * as bcrypt from 'bcryptjs';
+import { InSignUpDto } from './dto/in_sign_up.dto';
+import { InUpdateUserDto } from './dto/in_update_user.dto';
+import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UsersRepository {
@@ -41,12 +40,17 @@ export class UsersRepository {
     inUpdateUserDto: InUpdateUserDto,
   ): Promise<User> {
     // const { email, password, name } = authCredentialsDto;
-    const updateUser = inUpdateUserDto;
+    const { name, profileImage, introduce } = inUpdateUserDto;
+    console.log(userFilterQuery);
 
     try {
-      return this.userModel.findOneAndUpdate(userFilterQuery, updateUser, {
-        new: true,
-      });
+      return this.userModel.findOneAndUpdate(
+        userFilterQuery,
+        { name, profileImage, introduce },
+        {
+          new: true,
+        },
+      );
     } catch (e) {
       throw new InternalServerErrorException();
     }

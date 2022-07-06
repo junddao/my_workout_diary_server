@@ -19,6 +19,8 @@ import { InSignInKakaoDto } from './dto/in_sign_in_kakao.dto';
 import { ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OutGetMeDto } from './dto/out_get_me.dto';
 import { OutSignInDto } from './dto/out_sign_in.dto';
+import { InSignInAppleDto } from './dto/in_sign_in_apple.dto';
+import { GetUser } from './get-user.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -114,8 +116,7 @@ export class UserController {
   async updateUser(
     @Body() inUpdateUserDto: InUpdateUserDto,
   ): Promise<ResponseDto<OutGetUserDto>> {
-    const id = inUpdateUserDto._id;
-    const data = await this.userService.updateUser(id, inUpdateUserDto);
+    const data = await this.userService.updateUser(inUpdateUserDto);
     return {
       success: true,
       error: null,
@@ -134,6 +135,20 @@ export class UserController {
       success: true,
       error: null,
       data: [data],
+    };
+  }
+
+  @ApiOperation({ summary: '애플 로그인' })
+  @ApiResponseDto(OutSignInKakaoDto)
+  @Post('/apple')
+  async signInApple(
+    @Body() inSignInApple: InSignInAppleDto,
+  ): Promise<ResponseDto<null>> {
+    await this.userService.signInApple(inSignInApple);
+    return {
+      success: true,
+      error: null,
+      data: null,
     };
   }
 }

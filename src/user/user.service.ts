@@ -20,6 +20,7 @@ import { OutSignInDto } from './dto/out_sign_in.dto';
 import { OutSignInKakaoDto } from './dto/out_sign_in_kakao.dto';
 import { OutGetUserDto } from './dto/out_get_user.dto';
 import { throwError } from 'rxjs';
+import { InSignInAppleDto } from './dto/in_sign_in_apple.dto';
 
 const firebase_params = {
   type: serviceAccount.type,
@@ -86,6 +87,30 @@ export class UserService {
     }
   }
 
+  async signInApple(inSignInAppleDto: InSignInAppleDto): Promise<void> {
+    const uid = inSignInAppleDto.uid;
+    const { email } = inSignInAppleDto;
+    const updateParams = {
+      email: inSignInAppleDto.email,
+      profileImage: inSignInAppleDto.profileImage,
+      name: inSignInAppleDto.name,
+    };
+
+    const newUser: InSignUpDto = {
+      email: updateParams.email,
+      name: updateParams.name ?? 'no name',
+      profileImage: updateParams.profileImage,
+      social: 'apple',
+      uid: uid,
+    };
+
+    const exist = await this.usersRepository.findOne({ email });
+    if (exist != null) {
+      return;
+    }
+    await this.usersRepository.create(newUser);
+  }
+
   async signInKakao(
     inSignInKakaoDto: InSignInKakaoDto,
   ): Promise<OutSignInKakaoDto> {
@@ -95,10 +120,12 @@ export class UserService {
       profileImage: inSignInKakaoDto.profileImage,
       name: inSignInKakaoDto.name,
     };
+    const { email } = inSignInKakaoDto;
 
-    try {
+    const exist = await this.usersRepository.findOne({ email });
+    if (exist != null) {
       await this.admin.auth().updateUser(uid, updateParams);
-    } catch (e) {
+    } else {
       updateParams['uid'] = uid;
       updateParams['social'] = 'kakao';
 
@@ -118,10 +145,8 @@ export class UserService {
     return { fbCustomToken };
   }
 
-  async updateUser(
-    id: ObjectId,
-    inUpdateUserDto: InUpdateUserDto,
-  ): Promise<User> {
-    return this.usersRepository.findOneAndUpdate({ id }, inUpdateUserDto);
+  async updateUser(inUpdateUserDto: InUpdateUserDto): Promise<User> {
+    const { email } = inUpdateUserDto;
+    return this.usersRepository.findOneAndUpdate({ email }, inUpdateUserDto);
   }
 }
