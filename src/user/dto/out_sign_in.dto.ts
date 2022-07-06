@@ -8,5 +8,5 @@ export class OutSignInDto {
     required: true,
   })
   @IsNotEmpty()
-  token: string;
+  accessToken: string;
 }

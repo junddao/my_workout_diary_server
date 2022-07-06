@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { ObjectId } from 'mongoose';
+import RecordStatus from '../record_status.enum';
 
-export class OutGetUserDto {
+export class OutGetRecordDto {
   @ApiProperty({
     example: '62ab12a23e9e123a2c054f',
     description: 'id',
@@ -12,51 +13,44 @@ export class OutGetUserDto {
   _id: ObjectId;
 
   @ApiProperty({
-    example: 'junddao@kakao.com',
-    description: '이메일',
+    example: '1123sadad123wedqe',
+    description: '생성 유저의 id',
     required: true,
   })
   @IsNotEmpty()
-  email: string;
+  userId: ObjectId;
 
   @ApiProperty({
-    example: '홍길동',
-    description: '사용자명',
+    example: '123',
+    description: '운동시간',
     required: true,
   })
   @IsNotEmpty()
-  name: string;
+  workoutTime: number;
 
   @ApiProperty({
-    example: '안녕하세요. 미로입니다.',
-    description: '소개글',
-    required: false,
-  })
-  introduce: string;
-
-  @ApiProperty({
-    example: 'https://aaaa.com',
-    description: '프로필 사진 경로',
+    example: 'GT / VG / GD / NB / BD',
+    description: '운동후 컨디션',
     required: true,
   })
-  profileImage: string;
-
-  // @IsNotEmpty()
-  // status (signed, active, left)
+  @IsNotEmpty()
+  condition: RecordStatus;
 
   @ApiProperty({
-    example: 'kakao / apple',
-    description: '로그인 소셜 정보',
-    required: true,
-  })
-  social: string;
-
-  @ApiProperty({
-    example: 'true / false',
-    description: 'push 여부',
+    example: '2017-03-16T17:40:00+09:00',
+    description: '시작시간(ISO 8601 시간)',
     required: false,
   })
-  pushEnabled: boolean;
+  @IsNotEmpty()
+  startTime: Date;
+
+  @ApiProperty({
+    example: '2017-03-16T17:40:00+09:00',
+    description: '종료 시간(ISO 8601 시간)',
+    required: false,
+  })
+  @IsNotEmpty()
+  endTime: Date;
 
   @ApiProperty({
     example: '2017-03-16T17:40:00+09:00',
