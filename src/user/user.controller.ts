@@ -21,6 +21,7 @@ import { OutGetMeDto } from './dto/out_get_me.dto';
 import { OutSignInDto } from './dto/out_sign_in.dto';
 import { InSignInAppleDto } from './dto/in_sign_in_apple.dto';
 import { GetUser } from './get-user.decorator';
+import { InGetTokenDto } from './dto/in_get_token.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -102,6 +103,20 @@ export class UserController {
     @Body() inSingInDto: InSignInDto,
   ): Promise<ResponseDto<OutSignInDto>> {
     const data = await this.userService.signIn(inSingInDto);
+    return {
+      success: true,
+      error: null,
+      data: [data],
+    };
+  }
+
+  @ApiOperation({ summary: '로그인' })
+  @ApiResponseDto(InGetTokenDto)
+  @Post('/get/token')
+  async getToken(
+    @Body() inGetTokenDto: InGetTokenDto,
+  ): Promise<ResponseDto<OutSignInDto>> {
+    const data = await this.userService.getToken(inGetTokenDto);
     return {
       success: true,
       error: null,

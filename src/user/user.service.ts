@@ -1,3 +1,4 @@
+import { InGetTokenDto } from './dto/in_get_token.dto';
 import { ResponseDto } from '../common/dto/response.dto';
 import { InSignInKakaoDto } from './dto/in_sign_in_kakao.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
@@ -76,6 +77,17 @@ export class UserService {
     } else {
       throw new ConflictException('user not exist');
     }
+  }
+  async getToken(InGetTokenDto: InGetTokenDto): Promise<OutSignInDto> {
+    const { email } = InGetTokenDto;
+    const payload = { email };
+    const user = await this.usersRepository.findOne({ email });
+    
+    if (user == null) throw new ConflictException('user not exist');
+
+    const accessToken = await this.jwtService.sign(payload);
+    return { accessToken };
+   
   }
 
   async drop(user: User): Promise<boolean> {
