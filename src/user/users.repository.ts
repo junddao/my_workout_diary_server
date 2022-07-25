@@ -9,6 +9,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { User, UserDocument } from './schemas/user.schema';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersRepository {
@@ -24,6 +25,12 @@ export class UsersRepository {
 
   async create(inSignUpDto: InSignUpDto): Promise<void> {
     try {
+      const { password } = inSignUpDto;
+
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(password, salt);
+      inSignUpDto.password = hashedPassword;
+
       const newUser = { ...inSignUpDto, status: 'active' };
       await this.userModel.create(newUser);
     } catch (error) {

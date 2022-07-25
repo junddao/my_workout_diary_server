@@ -11,6 +11,7 @@ on:
 env:
   S3_BUCKET_NAME: my-workout-diary-bucket
 
+# JOBS 
 jobs:
   deploy:
     runs-on: ubuntu-22.04

@@ -27,6 +27,14 @@ export class InSignUpDto {
   email: string;
 
   @ApiProperty({
+    example: 'aaaaaa',
+    description: '패스워드',
+    required: true,
+  })
+  @IsNotEmpty()
+  password: string;
+
+  @ApiProperty({
     example: '홍길동',
     description: '사용자명',
     required: true,

@@ -1,3 +1,4 @@
+import { InGetTokenDto } from './dto/in_get_token.dto';
 import { ResponseDto } from '../common/dto/response.dto';
 import { InSignInKakaoDto } from './dto/in_sign_in_kakao.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
@@ -21,6 +22,7 @@ import { OutSignInKakaoDto } from './dto/out_sign_in_kakao.dto';
 import { OutGetUserDto } from './dto/out_get_user.dto';
 import { throwError } from 'rxjs';
 import { InSignInAppleDto } from './dto/in_sign_in_apple.dto';
+import * as bcrypt from 'bcryptjs';
 
 const firebase_params = {
   type: serviceAccount.type,
@@ -65,11 +67,23 @@ export class UserService {
   }
 
   async signIn(inSignInDto: InSignInDto): Promise<OutSignInDto> {
-    const { email } = inSignInDto;
-    const payload = { email };
+    const { email, password } = inSignInDto;
 
-    const exist = await this.usersRepository.findOne({ email });
-    if (exist == null) throw new ConflictException('user not exist');
+    const user = await this.usersRepository.findOne({ email });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const payload = { email };
+      const accessToken = await this.jwtService.sign(payload);
+      return { accessToken };
+    } else {
+      throw new ConflictException('user not exist');
+    }
+  }
+  async getToken(InGetTokenDto: InGetTokenDto): Promise<OutSignInDto> {
+    const { email } = InGetTokenDto;
+    const payload = { email };
+    const user = await this.usersRepository.findOne({ email });
+
+    if (user == null) throw new ConflictException('user not exist');
 
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
@@ -101,6 +115,7 @@ export class UserService {
       name: updateParams.name ?? 'no name',
       profileImage: updateParams.profileImage,
       social: 'apple',
+      password: 'apple',
       uid: uid,
     };
 
@@ -134,6 +149,7 @@ export class UserService {
         name: updateParams.name ?? 'no name',
         profileImage: updateParams.profileImage,
         social: 'kakao',
+        password: 'kakao',
         uid: uid,
       };
       await this.admin.auth().createUser(newUser);
