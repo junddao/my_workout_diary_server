@@ -82,12 +82,11 @@ export class UserService {
     const { email } = InGetTokenDto;
     const payload = { email };
     const user = await this.usersRepository.findOne({ email });
-    
+
     if (user == null) throw new ConflictException('user not exist');
 
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
-   
   }
 
   async drop(user: User): Promise<boolean> {
