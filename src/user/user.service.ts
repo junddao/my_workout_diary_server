@@ -126,9 +126,6 @@ export class UserService {
     };
 
     const user = await this.usersRepository.findOne({ email });
-    if (user.status == 'drop') {
-      throw new NotAcceptableException();
-    }
     if (user != null) {
       return;
     }
@@ -147,9 +144,6 @@ export class UserService {
     const { email } = inSignInKakaoDto;
 
     const user = await this.usersRepository.findOne({ email });
-    if (user.status == 'drop') {
-      throw new NotAcceptableException();
-    }
     if (user != null) {
       await this.admin.auth().updateUser(uid, updateParams);
     } else {
