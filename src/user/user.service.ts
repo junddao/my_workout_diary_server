@@ -115,7 +115,7 @@ export class UserService {
       name: updateParams.name ?? 'no name',
       profileImage: updateParams.profileImage,
       social: 'apple',
-      password: 'apple',
+      password: 'applepassword',
       uid: uid,
     };
 
@@ -149,7 +149,7 @@ export class UserService {
         name: updateParams.name ?? 'no name',
         profileImage: updateParams.profileImage,
         social: 'kakao',
-        password: 'kakao',
+        password: 'kakaopassword',
         uid: uid,
       };
       await this.admin.auth().createUser(newUser);
