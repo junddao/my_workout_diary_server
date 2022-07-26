@@ -47,13 +47,29 @@ export class UsersRepository {
     inUpdateUserDto: InUpdateUserDto,
   ): Promise<User> {
     // const { email, password, name } = authCredentialsDto;
-    const { name, profileImage, introduce } = inUpdateUserDto;
+    // const { name, profileImage, status } = inUpdateUserDto;
+    console.log(userFilterQuery);
+
+    try {
+      return this.userModel.findOneAndUpdate(userFilterQuery, inUpdateUserDto, {
+        new: true,
+      });
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async findOneAndDrop(
+    userFilterQuery: FilterQuery<User>,
+    updateFilterQuery: FilterQuery<User>,
+  ): Promise<User> {
+    const { status } = updateFilterQuery;
     console.log(userFilterQuery);
 
     try {
       return this.userModel.findOneAndUpdate(
         userFilterQuery,
-        { name, profileImage, introduce },
+        { status },
         {
           new: true,
         },

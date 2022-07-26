@@ -50,6 +50,8 @@ export class OutGetMeDto {
 
   // @IsNotEmpty()
   // status (signed, active, left)
+  @IsNotEmpty()
+  status: string;
 
   @ApiProperty({
     example: 'true / false',

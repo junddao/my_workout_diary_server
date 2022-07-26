@@ -8,6 +8,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { User } from './schemas/user.schema';
@@ -70,6 +71,9 @@ export class UserService {
     const { email, password } = inSignInDto;
 
     const user = await this.usersRepository.findOne({ email });
+    if (user.status == 'drop') {
+      return { accessToken: '' };
+    }
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload = { email };
       const accessToken = await this.jwtService.sign(payload);
@@ -82,7 +86,9 @@ export class UserService {
     const { email } = InGetTokenDto;
     const payload = { email };
     const user = await this.usersRepository.findOne({ email });
-
+    if (user.status == 'drop') {
+      return { accessToken: '' };
+    }
     if (user == null) throw new ConflictException('user not exist');
 
     const accessToken = await this.jwtService.sign(payload);
@@ -91,9 +97,9 @@ export class UserService {
 
   async drop(user: User): Promise<boolean> {
     user.status = 'drop';
-    const id = user._id;
-    const updatedUser = await this.usersRepository.findOneAndUpdate(
-      { id },
+    const { email } = user;
+    const updatedUser = await this.usersRepository.findOneAndDrop(
+      { email },
       user,
     );
     if (updatedUser != null) {
@@ -119,8 +125,11 @@ export class UserService {
       uid: uid,
     };
 
-    const exist = await this.usersRepository.findOne({ email });
-    if (exist != null) {
+    const user = await this.usersRepository.findOne({ email });
+    if (user.status == 'drop') {
+      throw new NotAcceptableException();
+    }
+    if (user != null) {
       return;
     }
     await this.usersRepository.create(newUser);
@@ -137,8 +146,11 @@ export class UserService {
     };
     const { email } = inSignInKakaoDto;
 
-    const exist = await this.usersRepository.findOne({ email });
-    if (exist != null) {
+    const user = await this.usersRepository.findOne({ email });
+    if (user.status == 'drop') {
+      throw new NotAcceptableException();
+    }
+    if (user != null) {
       await this.admin.auth().updateUser(uid, updateParams);
     } else {
       updateParams['uid'] = uid;
