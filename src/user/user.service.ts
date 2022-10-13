@@ -1,27 +1,16 @@
 import { InGetTokenDto } from './dto/in_get_token.dto';
-import { ResponseDto } from '../common/dto/response.dto';
 import { InSignInKakaoDto } from './dto/in_sign_in_kakao.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { UsersRepository } from './users.repository';
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  NotAcceptableException,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from './schemas/user.schema';
 import { JwtService } from '@nestjs/jwt';
 import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { InSignInDto } from './dto/in_sign_in.dto';
 import * as firebase from 'firebase-admin';
 import * as serviceAccount from './serviceAccountKey.json';
-import mongoose, { ObjectId } from 'mongoose';
 import { OutSignInDto } from './dto/out_sign_in.dto';
 import { OutSignInKakaoDto } from './dto/out_sign_in_kakao.dto';
-import { OutGetUserDto } from './dto/out_get_user.dto';
-import { throwError } from 'rxjs';
 import { InSignInAppleDto } from './dto/in_sign_in_apple.dto';
 import * as bcrypt from 'bcryptjs';
 
