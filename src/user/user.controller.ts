@@ -20,7 +20,6 @@ import { ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OutGetMeDto } from './dto/out_get_me.dto';
 import { OutSignInDto } from './dto/out_sign_in.dto';
 import { InSignInAppleDto } from './dto/in_sign_in_apple.dto';
-import { GetUser } from './get-user.decorator';
 import { InGetTokenDto } from './dto/in_get_token.dto';
 
 @ApiTags('User')

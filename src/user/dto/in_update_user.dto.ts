@@ -4,14 +4,6 @@ import { ObjectId } from 'mongoose';
 
 export class InUpdateUserDto {
   @ApiProperty({
-    example: '62ab12a23e9e123a2c054f',
-    description: 'id',
-    required: true,
-  })
-  @IsNotEmpty()
-  _id: ObjectId;
-
-  @ApiProperty({
     example: 'junddao@kakao.com',
     description: '이메일',
     required: true,
@@ -26,6 +18,9 @@ export class InUpdateUserDto {
   })
   @IsNotEmpty()
   name: string;
+
+  @IsNotEmpty()
+  status: string;
 
   @ApiProperty({
     example: '안녕하세요. 미로입니다.',

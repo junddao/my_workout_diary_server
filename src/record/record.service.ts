@@ -79,7 +79,7 @@ export class RecordService {
     });
     // 3. sort 하고
     const sortedRanker = rankers
-      .sort((a, b) => a.totalWorkoutTime - b.totalWorkoutTime)
+      .sort((a, b) => b.totalWorkoutTime - a.totalWorkoutTime)
       .slice(0, 10);
 
     for (let i = 0; i < sortedRanker.length; i++) {

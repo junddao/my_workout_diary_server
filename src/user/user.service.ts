@@ -1,26 +1,16 @@
 import { InGetTokenDto } from './dto/in_get_token.dto';
-import { ResponseDto } from '../common/dto/response.dto';
 import { InSignInKakaoDto } from './dto/in_sign_in_kakao.dto';
 import { InSignUpDto } from './dto/in_sign_up.dto';
 import { UsersRepository } from './users.repository';
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from './schemas/user.schema';
 import { JwtService } from '@nestjs/jwt';
 import { InUpdateUserDto } from './dto/in_update_user.dto';
 import { InSignInDto } from './dto/in_sign_in.dto';
 import * as firebase from 'firebase-admin';
 import * as serviceAccount from './serviceAccountKey.json';
-import mongoose, { ObjectId } from 'mongoose';
 import { OutSignInDto } from './dto/out_sign_in.dto';
 import { OutSignInKakaoDto } from './dto/out_sign_in_kakao.dto';
-import { OutGetUserDto } from './dto/out_get_user.dto';
-import { throwError } from 'rxjs';
 import { InSignInAppleDto } from './dto/in_sign_in_apple.dto';
 import * as bcrypt from 'bcryptjs';
 
@@ -70,6 +60,9 @@ export class UserService {
     const { email, password } = inSignInDto;
 
     const user = await this.usersRepository.findOne({ email });
+    if (user.status == 'drop') {
+      return { accessToken: '' };
+    }
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload = { email };
       const accessToken = await this.jwtService.sign(payload);
@@ -82,7 +75,9 @@ export class UserService {
     const { email } = InGetTokenDto;
     const payload = { email };
     const user = await this.usersRepository.findOne({ email });
-
+    if (user.status == 'drop') {
+      return { accessToken: '' };
+    }
     if (user == null) throw new ConflictException('user not exist');
 
     const accessToken = await this.jwtService.sign(payload);
@@ -91,9 +86,9 @@ export class UserService {
 
   async drop(user: User): Promise<boolean> {
     user.status = 'drop';
-    const id = user._id;
-    const updatedUser = await this.usersRepository.findOneAndUpdate(
-      { id },
+    const { email } = user;
+    const updatedUser = await this.usersRepository.findOneAndDrop(
+      { email },
       user,
     );
     if (updatedUser != null) {
@@ -115,12 +110,12 @@ export class UserService {
       name: updateParams.name ?? 'no name',
       profileImage: updateParams.profileImage,
       social: 'apple',
-      password: 'apple',
+      password: 'applepassword',
       uid: uid,
     };
 
-    const exist = await this.usersRepository.findOne({ email });
-    if (exist != null) {
+    const user = await this.usersRepository.findOne({ email });
+    if (user != null) {
       return;
     }
     await this.usersRepository.create(newUser);
@@ -137,8 +132,8 @@ export class UserService {
     };
     const { email } = inSignInKakaoDto;
 
-    const exist = await this.usersRepository.findOne({ email });
-    if (exist != null) {
+    const user = await this.usersRepository.findOne({ email });
+    if (user != null) {
       await this.admin.auth().updateUser(uid, updateParams);
     } else {
       updateParams['uid'] = uid;
@@ -149,7 +144,7 @@ export class UserService {
         name: updateParams.name ?? 'no name',
         profileImage: updateParams.profileImage,
         social: 'kakao',
-        password: 'kakao',
+        password: 'kakaopassword',
         uid: uid,
       };
       await this.admin.auth().createUser(newUser);
